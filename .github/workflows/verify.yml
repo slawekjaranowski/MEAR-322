@@ -6,7 +6,7 @@ on:
 
 jobs:
   verify:
-    name: Verify (jar.compress = ${{ matrix.compress_jar }}) JDK ${{ matrix.java-version }}
+    name: Verify jar.compress=${{ matrix.compress_jar }}) JDK-${{ matrix.java-version }}-${{ matrix.java-distribution }}
 
     runs-on: ubuntu-latest
 
@@ -15,6 +15,7 @@ jobs:
       matrix:
         compress_jar: [ true, false ]
         java-version: [ 8, 11, 17, 19 ]
+        java-distribution: [ 'temurin', 'zulu', 'liberica', 'microsoft', 'corretto' ]
 
     steps:
     - name: Checkout project
@@ -27,7 +28,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        distribution: 'temurin'
+        distribution: ${{ matrix.java-distribution }}
         java-version: ${{ matrix.java-version }}
 
     - name: Prepare EAR Plugin repository
