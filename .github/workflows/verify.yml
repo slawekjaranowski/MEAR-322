@@ -6,7 +6,7 @@ on:
 
 jobs:
   verify:
-    name: Verify jar.compress=${{ matrix.compress_jar }}) JDK-${{ matrix.java-version }}-${{ matrix.java-distribution }}
+    name: Verify jar.c=${{ matrix.compress_jar }} JDK-${{ matrix.java-version }}-${{ matrix.java-distribution }}
 
     runs-on: ubuntu-latest
 
@@ -16,6 +16,11 @@ jobs:
         compress_jar: [ true, false ]
         java-version: [ 8, 11, 17, 19 ]
         java-distribution: [ 'temurin', 'zulu', 'liberica', 'microsoft', 'corretto' ]
+        exclude:
+          - java-version: 8
+            java-distribution: 'microsoft'
+          - java-version: 19
+            java-distribution: 'microsoft'
 
     steps:
     - name: Checkout project
