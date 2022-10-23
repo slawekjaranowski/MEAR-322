@@ -1,0 +1,54 @@
+name: Verify
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  verify:
+    name: Verify (jar.compress = ${{ matrix.compress_jar }})
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        compress_jar: [ true, false ]
+
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v3
+    - name: Cache local Maven repository
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-verify
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 11
+    - name: Prepare EAR Plugin repository
+      run: git init maven-ear-plugin
+    - name: Checkout EAR Plugin
+      run: |
+        cd maven-ear-plugin
+        git fetch --depth 1 https://github.com/apache/maven-ear-plugin 340c7ac3848f4a727df76bc844cfca5e3f34ada4:bisect
+        git checkout bisect
+    - name: Build EAR Plugin
+      run: ./mvnw -f maven-ear-plugin -DskipTests install
+    - name: Maven Package
+      run: ./mvnw package -Djar.compress=${{ matrix.compress_jar }}
+    - name: Unpack original jar
+      run: |
+        mkdir /tmp/original
+        WORKSPACE=$(pwd)
+        cd /tmp/original
+        jar xvf ${WORKSPACE}/in-clojure/target/pzrep.mear322-clojure.jar
+    - name: Unpack jar from EAR
+      run: |
+        mkdir /tmp/from-ear
+        WORKSPACE=$(pwd)
+        cd /tmp/from-ear
+        jar xvf ${WORKSPACE}/ear-ejbs/target/pzrep.mear322-ear/pzrep.mear322-clojure.jar
+

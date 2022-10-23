@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>pzrep.mear322</groupId>
+        <artifactId>parent</artifactId>
+        <version>6-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ear</artifactId>
+    <packaging>ear</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>pzrep.mear322</groupId>
+            <artifactId>clojure</artifactId>
+            <type>ejb</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <applicationName>mear322</applicationName>
+                    <version>8</version>
+                    <defaultLibBundleDir>jlib</defaultLibBundleDir>
+                    <outputFileNameMapping>@{groupId}@-@{artifactId}@.@{extension}@</outputFileNameMapping>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
